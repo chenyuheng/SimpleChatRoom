@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <title>Chatting Room</title>
+    <script type="text/javascript">
+        function getJson(url) {
+            const httpReq = new XMLHttpRequest();
+            httpReq.open("GET", url, false);
+            httpReq.send(null);
+            const jsonObj = JSON.parse(httpReq.responseText);
+            return jsonObj;
+        }
+
+        function run() {
+            document.getElementById("sendingBox").setAttribute("action", url);
+            setInterval("getRecords();",1000);
+        }
+
+        url = "http://139.196.17.123:20006";
+
+        function getRecords() {
+            const jsonObj = getJson(url);
+            let i;
+            let content = "";
+            for (i = 0; i < jsonObj.length; i++) {
+                let record = "<p><b>name:</b> " + jsonObj[i]["name"] + "<br />" +
+                    "<b>time:</b> " + jsonObj[i]["time"] + "<br />" +
+                    "<b>message:</b><br />" + jsonObj[i]["message"] + "</p>";
+                content += record;
+            }
+            let recordsBox = document.getElementById("recordsBox");
+            recordsBox.innerHTML = content;
+        }
+    </script>
+</head>
+<body onload="run()">
+    <iframe name="empty"></iframe>
+    <form method="post" target="empty" id="sendingBox">
+        Nickname:<br>
+        <input type="text" name="name" value="Mickey">
+        <br>
+        Message:<br>
+        <input type="text" name="message" value="Mouse">
+        <br><br>
+        <input type="submit" value="Submit">
+    </form>
+    <div id="recordsBox"></div>
+</body>
+</html>

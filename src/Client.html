@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <title>Chatting Room</title>
+    <script type="text/javascript">
+        function getJson(url) {
+            const httpReq = new XMLHttpRequest();
+            httpReq.open("GET", url, false);
+            httpReq.send(null);
+            const jsonObj = JSON.parse(httpReq.responseText);
+            return jsonObj;
+        }
+
+        function run() {
+            setInterval("getRecords();",1000);
+        }
+
+        function getRecords() {
+            let url = "http://" + document.getElementById("serverAddress").value + ":20006";
+            console.log(url)
+            document.getElementById("sendingBox").setAttribute("action", url);
+            const jsonObj = getJson(url);
+            let i;
+            let content = "";
+            for (i = 0; i < jsonObj.length; i++) {
+                let record = "<p><b>name:</b> " + jsonObj[i]["name"] + "<br />" +
+                    "<b>time:</b> " + jsonObj[i]["time"] + "<br />" +
+                    "<b>message:</b><br />" + jsonObj[i]["message"] + "</p>";
+                content += record;
+            }
+            let recordsBox = document.getElementById("recordsBox");
+            recordsBox.innerHTML = content;
+        }
+    </script>
+</head>
+<body onload="run()">
+    Server Address:<br />
+    <input tyle="text" id="serverAddress" value="localhost">
+    <br />
+    <br />
+    <iframe name="empty"></iframe>
+    <form method="post" target="empty" id="sendingBox">
+        Nickname:<br>
+        <input type="text" name="name">
+        <br>
+        Message:<br>
+        <textarea type="text" name="message" rows="3" cols="50"> </textarea>
+        <br><br>
+        <input type="submit" value="Submit">
+    </form>
+    <div id="recordsBox"></div>
+</body>
+</html>
